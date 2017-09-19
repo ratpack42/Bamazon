@@ -1,7 +1,8 @@
+//NPM packages required
 var mysql = require('mysql');
 var Table = require('cli-table');
 var inquirer = require('inquirer');
-
+//Sql connection
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -10,7 +11,7 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
-
+//runs election of items
 function buyProduct(item_id, amount) {
 	connection.query('SELECT * FROM products WHERE item_id = ?', [item_id], function(err, result) {
 		if ( err ) return console.log(err);
@@ -28,7 +29,7 @@ function buyProduct(item_id, amount) {
 		}
 	});
 }
-
+//inquirer runs asking questions. Ensures inserts an integer
 function promptUser() {
 	inquirer.prompt([
 		{
@@ -50,14 +51,14 @@ function promptUser() {
 		buyProduct(answers.item_id, answers.amount);
 	});
 }
-
+//Constructions of CLI-table
 function getProducts() {
 	connection.query('SELECT * FROM products', function(err, results) {
 		if ( err ) return console.log(err);
 		var table = new Table({
 		    head: ['Item Id', 'Product Name', 'Departmant Name', 'Stock Quantity', 'Price']
 		});
-		
+//pushes results to the table
 		results.forEach(function(obj) {
 			table.push([obj.item_id, obj.product_name, obj.departmant_name, obj.stock_quantity, '$' + obj.price]);
 		});

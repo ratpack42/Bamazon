@@ -17,7 +17,7 @@ function buyProduct(item_id, amount) {
 		var diff = result[0].stock_quantity - Number(amount);
 
 		if ( diff < 0 ) {
-			console.log('There are not enough ' + result[0].product_name + ' in the database');
+			console.log('There are not enough ' + result[0].product_name + ' in stock');
 			getProducts();
 		} else {
 			connection.query('UPDATE products SET stock_quantity = ? WHERE item_id = ?', [diff, item_id], function(err, result) {
@@ -33,7 +33,14 @@ function promptUser() {
 	inquirer.prompt([
 		{
 			name: 'item_id',
-			message: 'What product item id?'
+			message: 'What product item id?',
+			validate: function(value) {
+				if (Number(value)%1 === 0){
+					return true;
+
+				}
+				return 'Please input a interger!';
+			}
 		},
 		{
 			name: 'amount',
